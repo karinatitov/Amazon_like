@@ -29,8 +29,8 @@ function showProducts() {
     connection.query(query, function (err, res) {
         if (err) throw err;
         var displayItems = new Table({
-            head: ["Item ID", "Product Name", "Department", "Price", "Quantity"],
-            colWidths: [10, 25, 25, 10, 14]
+            head: ["ID", "Product Name", "Department", "Price", "Qty"],
+            colWidths: [4, 15, 15, 7, 7]
         });
         for (var i = 0; i < res.length; i++) {
             displayItems.push(
@@ -38,7 +38,26 @@ function showProducts() {
             );
         }
         console.log(displayItems.toString());
-        purchaseItem()
+        purchaseItemPrompt()
     })
 
 }
+
+function purchaseItemPrompt() {
+    inquirer.prompt([{
+            name: "id",
+            type: "input",
+            message: "Please enter Item ID you like to buy "
+        },
+        {
+            name: "quantity",
+            type: "input",
+            message: "How many items would you like to buy?"
+        },
+    ]).then(function (answers) {
+        var quantityOfItems = answers.quantity;
+        var requestedID = answers.id;
+        // purchaseItem(requestedID, quantityOfItems);
+    });
+}
+

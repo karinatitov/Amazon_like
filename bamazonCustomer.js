@@ -84,7 +84,8 @@ function purchaseItem(id, quantityNeeded) {
             });;
         } else {
 // If requested quantity greater than stock quantity
-            console.log("Sorry we don't have enough of " + response[0].product_name + ".");
+            console.log("Insufficient quantity!");
+            connection.end();
         };
 
         showProducts();

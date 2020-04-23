@@ -48,7 +48,7 @@ function purchaseItemPrompt() {
     inquirer.prompt([{
             name: "id",
             type: "input",
-            message: "Please enter Item ID you like to buy "
+            message: "Please enter Item ID you like to buy:"
         },
         {
             name: "quantity",
@@ -64,22 +64,29 @@ function purchaseItemPrompt() {
     });
 }
 
-function purchaseItem(id, quantityNeeded ) {
-    connection.query("SELECT * from products WHERE item_id = " + id, function(err, response){
-        console.log(response)
+function purchaseItem(id, quantityNeeded) {
+    connection.query("SELECT * from products WHERE item_id = " + id, function (err, response) {
+        //  console.log(response)
         if (err) throw error;
-if(quantityNeeded <= response[0].stock_quantity){
-    var totalPrice = response[0].price * quantityNeeded;
+        if (quantityNeeded <= response[0].stock_quantity) {
 
-    console.log("We have your order ready!");
-    console.log("Quantity : " + quantityNeeded, "\nProduct name: " + response[0].product_name, "\n Your total: " + totalPrice);
+            var totalPrice = response[0].price * quantityNeeded;
+            var itemsLeft = response[0].stock_quantity - quantityNeeded;
+            console.log("We have your order ready!");
+            console.log("Quantity : " + quantityNeeded, "\nProduct name: " + response[0].product_name, "\nYour total: $" + totalPrice);
+// Updating my MySQL
+            connection.query("UPDATE Products SET ? WHERE ?", [{
+                stock_quantity: itemsLeft
+            }, {
+                item_id: id
+            }], function (err, res) {
+                if (err) throw err; // Error Handler
+            });;
+        } else {
+// If requested quantity greater than stock quantity
+            console.log("Sorry we don't have enough of " + response[0].product_name + ".");
+        };
 
-    connection.query("UPDATE products SET stock_quantity = stock_quantity - " + quantityNeeded + "WHERE item_id = " + id);
-}else{
-    console.log("Sorry we don't have enough of " + response[0].product_name + ".");
-};
-showProducts();
+        showProducts();
     });
 };
-
-// showProducts();

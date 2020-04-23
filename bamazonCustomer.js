@@ -85,7 +85,7 @@ function purchaseItem(id, quantityNeeded) {
         } else {
 // If requested quantity greater than stock quantity
             console.log("Insufficient quantity!");
-            connection.end();
+            console.log("------------------------------------");
         };
 
         showProducts();
